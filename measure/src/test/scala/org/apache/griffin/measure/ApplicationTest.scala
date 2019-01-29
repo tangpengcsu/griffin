@@ -6,19 +6,6 @@ import org.scalatest.FunSuite
 
 import scala.reflect.io.File
 
-/** 版权声明：本程序模块属于大数据分析平台（KDBI）的一部分
-  * 金证科技股份有限公司 版权所有
-  *
-  * 模块名称：${DESCRIPTION}
-  * 模块描述：${DESCRIPTION}
-  * 开发作者：tang.peng
-  * 创建日期：2019/1/28
-  * 模块版本：1.0.1.0
-  * ----------------------------------------------------------------
-  * 修改日期        版本        作者          备注
-  * 2019/1/28     1.0.1.0       tang.peng     创建
-  * ----------------------------------------------------------------
-  */
 class ApplicationTest extends FunSuite{
   test(""){
 //_accuracy-batch-griffindsl.json
@@ -34,7 +21,8 @@ class ApplicationTest extends FunSuite{
   }
 
   def genJob(fileName: String): Unit = {
-     System.setProperty("user.dir","D:\\workspace\\github\\tangpengcsu\\griffin.git\\tags\\griffin-0.4.0\\measure")
+    /*D:\workspace\github\tangpengcsu\griffin\measure\src\test*/
+     System.setProperty("user.dir","D:\\workspace\\github\\tangpengcsu\\griffin\\measure")
     println(System.getProperty("user.dir"))
   val dir = System.getProperty("user.dir") + File.separator + "src\\test" +
       s"\\resources\\"

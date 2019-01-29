@@ -37,6 +37,7 @@ object DqType {
     DistinctnessType,
     TimelinessType,
     CompletenessType,
+    ValidityType,
     UnknownType
   )
   def apply(ptn: String): DqType = {
@@ -111,7 +112,10 @@ object DqType {
   val idPattern = "^(?i)completeness$".r
   val desc = "completeness"
 }
-
+case object ValidityType extends DqType {
+  val idPattern = "^(?i)validity$".r
+  val desc = "validity"
+}
  case object UnknownType extends DqType {
   val idPattern = "".r
   val desc = "unknown"

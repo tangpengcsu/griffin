@@ -148,6 +148,7 @@ case class RuleParam(@JsonProperty("dsl.type") private val dslType: String,
                      @JsonProperty("in.dataframe.name") private val inDfName: String = null,
                      @JsonProperty("out.dataframe.name") private val outDfName: String = null,
                      @JsonProperty("rule") private val rule: String = null,
+                     @JsonProperty("rule.type") private val ruleType:String = null,
                      @JsonProperty("details") private val details: Map[String, Any] = null,
                      @JsonProperty("cache") private val cache: Boolean = false,
                      @JsonProperty("out") private val outputs: List[RuleOutputParam] = null
@@ -155,6 +156,8 @@ case class RuleParam(@JsonProperty("dsl.type") private val dslType: String,
   def getDslType: DslType = if (dslType != null) DslType(dslType) else DslType("")
   def getDqType: DqType = if (dqType != null) DqType(dqType) else DqType("")
   def getCache: Boolean = if (cache) cache else false
+
+  def getRuleType: RuleType = if(ruleType != null) RuleType(ruleType) else RuleType("")
 
   def getInDfName(defName: String = ""): String = if (inDfName != null) inDfName else defName
   def getOutDfName(defName: String = ""): String = if (outDfName != null) outDfName else defName
@@ -166,19 +169,19 @@ case class RuleParam(@JsonProperty("dsl.type") private val dslType: String,
 
   def replaceInDfName(newName: String): RuleParam = {
     if (StringUtils.equals(newName, inDfName)) this
-    else RuleParam(dslType, dqType, newName, outDfName, rule, details, cache, outputs)
+    else RuleParam(dslType, dqType, newName, outDfName, rule, null,details, cache, outputs)
   }
   def replaceOutDfName(newName: String): RuleParam = {
     if (StringUtils.equals(newName, outDfName)) this
-    else RuleParam(dslType, dqType, inDfName, newName, rule, details, cache, outputs)
+    else RuleParam(dslType, dqType, inDfName, newName, rule,null, details, cache, outputs)
   }
   def replaceInOutDfName(in: String, out: String): RuleParam = {
     if (StringUtils.equals(inDfName, in) && StringUtils.equals(outDfName, out)) this
-    else RuleParam(dslType, dqType, in, out, rule, details, cache, outputs)
+    else RuleParam(dslType, dqType, in, out, rule,null, details, cache, outputs)
   }
   def replaceRule(newRule: String): RuleParam = {
     if (StringUtils.equals(newRule, rule)) this
-    else RuleParam(dslType, dqType, inDfName, outDfName, newRule, details, cache, outputs)
+    else RuleParam(dslType, dqType, inDfName, outDfName, newRule,null, details, cache, outputs)
   }
 
   def validate(): Unit = {

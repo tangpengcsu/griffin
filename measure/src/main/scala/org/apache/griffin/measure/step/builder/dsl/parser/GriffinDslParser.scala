@@ -20,7 +20,7 @@ package org.apache.griffin.measure.step.builder.dsl.parser
 
 import org.apache.griffin.measure.configuration.enums._
 import org.apache.griffin.measure.step.builder.dsl._
-import org.apache.griffin.measure.step.builder.dsl.expr._
+import org.apache.griffin.measure.step.builder.dsl.expr.{CheckClause, VolabilityClause, _}
 
 /**
   * parser for griffin dsl rule
@@ -81,14 +81,30 @@ case class GriffinDslParser(dataSourceNames: Seq[String], functionNames: Seq[Str
     case exprs => CompletenessClause(exprs)
   }
 
-  def parseRule(rule: String, dqType: DqType): ParseResult[Expr] = {
-    val rootExpr = dqType match {
-      case AccuracyType => logicalExpression
-      case ProfilingType => profilingClause
-      case UniquenessType => uniquenessClause
-      case DistinctnessType => distinctnessClause
-      case TimelinessType => timelinessClause
-      case CompletenessType => completenessClause
+  def checkClause: Parser[CheckClause] = rep1sep(expression, Operator.COMMA) ^^ {
+    case exprs => CheckClause(exprs)
+  }
+
+  def volabilityClause: Parser[VolabilityClause] = expression ~ opt(whereClause)   ^^ {
+    case sel ~ whereOpt  => {
+      val preClauses = Seq(whereOpt).flatMap(opt => opt)
+      //val postClauses = Seq(orderbyOpt, limitOpt).flatMap(opt => opt)
+      VolabilityClause(sel, preClauses)
+    }
+  }
+
+
+  def parseRule(rule: String, dqType: DqType, ruleType: RuleType): ParseResult[Expr] = {
+    val rootExpr = (dqType, ruleType) match {
+      case (ValidityType, CheckType) => checkClause
+      case (ValidityType, ZipperType) => profilingClause
+      case (ValidityType,VolabilityType) => volabilityClause
+      case (AccuracyType | ValidityType, _) => logicalExpression
+      case (ProfilingType, _) => profilingClause
+      case (UniquenessType, _) => uniquenessClause
+      case (DistinctnessType, _) => distinctnessClause
+      case (TimelinessType, _) => timelinessClause
+      case (CompletenessType, _) => completenessClause
       case _ => expression
     }
     parseAll(rootExpr, rule)

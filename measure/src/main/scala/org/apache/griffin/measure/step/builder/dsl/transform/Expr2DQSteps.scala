@@ -20,7 +20,7 @@ package org.apache.griffin.measure.step.builder.dsl.transform
 
 import org.apache.griffin.measure.Loggable
 import org.apache.griffin.measure.configuration.dqdefinition.RuleParam
-import org.apache.griffin.measure.configuration.enums._
+import org.apache.griffin.measure.configuration.enums.{RecordCountType, UnknownRuleType, ValidityType, VolabilityType, ZipperType, _}
 import org.apache.griffin.measure.context.{ContextId, DQContext, TimeRange}
 import org.apache.griffin.measure.step.DQStep
 import org.apache.griffin.measure.step.builder.dsl.expr.Expr
@@ -46,13 +46,19 @@ object Expr2DQSteps {
             expr: Expr,
             ruleParam: RuleParam
            ): Expr2DQSteps = {
-    ruleParam.getDqType match {
-      case AccuracyType => AccuracyExpr2DQSteps(context, expr, ruleParam)
-      case ProfilingType => ProfilingExpr2DQSteps(context, expr, ruleParam)
-      case UniquenessType => UniquenessExpr2DQSteps(context, expr, ruleParam)
-      case DistinctnessType => DistinctnessExpr2DQSteps(context, expr, ruleParam)
-      case TimelinessType => TimelinessExpr2DQSteps(context, expr, ruleParam)
-      case CompletenessType => CompletenessExpr2DQSteps(context, expr, ruleParam)
+    val ruleType = ruleParam.getRuleType
+    val dqType = ruleParam.getDqType
+    (dqType, ruleType) match {
+      case (AccuracyType, RecordCountType) => RecordConsistencyExpr2DQSteps(context, expr, ruleParam)
+      case (AccuracyType, UnknownRuleType) => AccuracyExpr2DQSteps(context, expr, ruleParam)
+      case (ProfilingType, UnknownRuleType) => ProfilingExpr2DQSteps(context, expr, ruleParam)
+      case (UniquenessType, UnknownRuleType) => UniquenessExpr2DQSteps(context, expr, ruleParam)
+      case (DistinctnessType, UnknownRuleType) => DistinctnessExpr2DQSteps(context, expr, ruleParam)
+      case (TimelinessType, UnknownRuleType) => TimelinessExpr2DQSteps(context, expr, ruleParam)
+      case (CompletenessType, UnknownRuleType) => CompletenessExpr2DQSteps(context, expr, ruleParam)
+      case (ValidityType, VolabilityType) => VolabilityValidity2DQSteps(context, expr, ruleParam)
+      case (ValidityType, ZipperType) => ZipperValidity2DQSteps(context, expr, ruleParam)
+      case (ValidityType, _) => Validity2DQSteps(context, expr, ruleParam)
       case _ => emtptExpr2DQSteps
     }
   }

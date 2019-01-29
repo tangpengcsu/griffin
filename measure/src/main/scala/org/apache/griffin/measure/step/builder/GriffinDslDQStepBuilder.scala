@@ -38,8 +38,10 @@ case class GriffinDslDQStepBuilder(dataSourceNames: Seq[String],
     val name = getStepName(ruleParam.getOutDfName())
     val rule = ruleParam.getRule
     val dqType = ruleParam.getDqType
+    val ruleType = ruleParam.getRuleType
+
     try {
-      val result = parser.parseRule(rule, dqType)
+      val result = parser.parseRule(rule, dqType, ruleType)
       if (result.successful) {
         val expr = result.get
         val expr2DQSteps = Expr2DQSteps(context, expr, ruleParam.replaceOutDfName(name))

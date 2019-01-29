@@ -1,19 +1,24 @@
 {
   "spark": {
-    "log.level": "WARN",
+    "log.level": "INFO",
     "config": {
-      "spark.master": "local[*]"
+      "spark.master": "local[*]",
+      "spark.sql.warehouse.dir": "hdfs://SparkMaster:9000/user/hive/warehouse"
     }
   },
-
   "sinks": [
     {
       "type": "console",
       "config": {
         "max.log.lines": 10
       }
+    }, {
+      "type": "hdfs",
+      "config": {
+        "path": "file:///E:\\Users\\Documents\\大数据分析平台\\质量规则\\business",
+        "max.lines.per.file": 10000
+      }
     }
   ],
-
   "griffin.checkpoint": []
 }

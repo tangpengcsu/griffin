@@ -65,7 +65,7 @@ case class DQContext(contextId: ContextId,
   }
 
   implicit val encoder = Encoders.STRING
-  val functionNames: Seq[String] = sparkSession.catalog.listFunctions.map(_.name).collect.toSeq
+  val functionNames: Seq[String] = sparkSession.catalog.listFunctions.map(_.name).collect.toSeq:+("consistency")
 
   val dataSourceTimeRanges = loadDataSources()
 
