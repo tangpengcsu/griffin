@@ -1,0 +1,59 @@
+{
+  "name": "record_count",
+
+  "process.type": "batch",
+
+  "data.sources": [
+    {
+      "name": "source",
+      "baseline": true,
+      "connectors": [
+        {
+          "type": "hive",
+          "version": "1.2",
+          "config": {
+            "database": "default",
+            "table.name": "src_info"
+          }
+        }
+      ]
+    },
+    {
+      "name": "target",
+      "connectors": [
+        {
+          "type": "hive",
+          "version": "1.2",
+          "config": {
+            "database": "default",
+            "table.name": "test11"
+          }
+        }
+      ]
+    }
+  ],
+
+  "evaluate.rule": {
+    "rules": [
+      {
+        "dsl.type": "griffin-dsl",
+        "dq.type": "accuracy",
+        "out.dataframe.name": "testout",
+        "rule": "consistency(source.key, target.key)",
+        "rule.type":"record",
+        "details": {
+          "source.count": "source1",
+          "target.count": "target1"
+        },
+        "out":[
+          {
+            "type": "metric",
+            "name": "count1"
+          }
+        ]
+      }
+    ]
+  },
+
+  "sinks": ["CONSOLE","ELASTICSEARCH"]
+}

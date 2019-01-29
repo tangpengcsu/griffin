@@ -1,0 +1,48 @@
+{
+  "name": "validity",
+  "process.type": "batch",
+  "data.sources": [
+    {
+      "name": "source",
+      "baseline": true,
+      "connectors": [
+        {
+          "type": "hive",
+          "version": "1.2",
+          "config": {
+            "database": "default",
+            "table.name": "src_info"
+          }
+        }
+      ]
+    }
+  ],
+  "evaluate.rule": {
+    "rules": [
+      {
+        "dsl.type": "griffin-dsl",
+        "dq.type": "validity",
+        "out.dataframe.name": "consistency_field",
+        "rule": "source.key between (10,100)",
+        "details": {
+          "source": "source",
+          "miss": "miss_count",
+          "total": "total_count",
+          "matched": "matched_count"
+        },
+        "out": [
+          {
+            "type": "metric",
+            "name": "count1"
+          },{
+            "type": "record"
+          }
+        ]
+      }
+    ]
+  },
+  "sinks": [
+    "CONSOLE",
+    "HDFS"
+  ]
+}
